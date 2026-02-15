@@ -15,11 +15,11 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        overflow: hidden; /* Evita rebotes en móvil */
+        overflow: hidden;
     }
     .container {
         background: white;
-        width: 90%; /* Ajuste para pantallas pequeñas */
+        width: 90%;
         max-width: 400px;
         padding: 20px;
         border-radius: 25px;
@@ -39,7 +39,7 @@
         width: 85%;
         text-align: center;
         outline: none;
-        font-size: 16px; /* Evita zoom automático en iPhone */
+        font-size: 16px;
     }
 
     button {
@@ -51,7 +51,7 @@
         color: white;
         font-weight: bold;
         cursor: pointer;
-        width: 80%; /* Botones más fáciles de tocar */
+        width: 80%;
     }
 
     #noBtn { 
@@ -71,13 +71,15 @@
         border: 2px solid #e7f3ff; 
         display: block; 
         margin: 0 auto; 
-        max-width: 100%; /* El juego se adapta al ancho del cel */
+        max-width: 100%;
         height: auto;
-        touch-action: none; /* Bloquea el scroll mientras juega */
+        touch-action: none;
     }
     #timer { font-weight: bold; color: #1e3a8a; font-size: 16px; }
     #secretCode { display: none; color: #d9480f; font-size: 18px; font-weight: bold; margin-top: 10px; background: #fff4e6; padding: 10px; border-radius: 10px; }
 
+    /* Sección de San Valentín */
+    #valentinSection { display: none; }
 </style>
 </head>
 <body>
@@ -95,8 +97,14 @@
         <p id="error" style="color:red; font-size: 11px; height: 12px;"></p>
     </div>
 
+    <div id="valentinSection">
+        <h2 style="color: #d9480f;">💌 Una última pregunta...</h2>
+        <p style="font-size: 16px; font-weight: bold;">¿Quieres ser mi Valentín hoy y siempre? 🌹</p>
+        <button onclick="valentinAceptado()" style="background: linear-gradient(135deg, #ff6b6b, #d9480f);">¡SÍ, QUIERO! ❤️</button>
+    </div>
+
     <div class="contract" id="contract">
-        <h2 style="text-align: center; margin-top: 0; font-size: 18px;">📜 CONTRATO 💍</h2>
+        <h2 style="text-align: center; margin-top: 0; font-size: 18px;">📜 CONTRATO OFICIAL 💍</h2>
         <p>
             Yo, Itziar, acepto:
             <br>
@@ -112,7 +120,7 @@
             <br>
             💙 Darte <strong>mucho amor</strong> diario. 🧸
             <br>
-            💙 Nadia y Bad Bunny son ley. 🎶
+            💙 <strong>Nadia es especial para nosotros.</strong> ✨
             <br><br>
             <strong>¡La mejor pareja! 💘</strong>
         </p>
@@ -123,21 +131,20 @@
         </div>
 
         <div style="text-align: center; height: 80px; position: relative;" id="finalChoice">
-            <button id="yesBtn" onclick="showSignature()" style="width: 100%;">SÍ, ACEPTO 💙</button>
+            <button id="yesBtn" onclick="showSignature()" style="width: 100%;">SÍ, ACEPTO EL CONTRATO 💙</button>
             <button id="noBtn">No</button>
         </div>
     </div>
 
     <div id="gameContainer">
-        <p style="font-size: 11px;">Toca el cuadro gris para saltar (10s)</p>
+        <p style="font-size: 11px;">Toca el cuadro para saltar (10s)</p>
         <div id="timer">Tiempo: 0s</div>
         <canvas id="gameCanvas" width="300" height="120"></canvas>
-        <div id="secretCode">🔓 CÓDIGO: 638</div>
+        <div id="secretCode">🔓 CÓDIGO REGALO: 638</div>
     </div>
 </div>
 
 <script>
-// Todo el código JS se mantiene igual pero con mejoras de toque
 function updateCounter() {
     const startDate = new Date('2025-11-13T00:00:00');
     const now = new Date();
@@ -165,9 +172,19 @@ function checkAnswer(){
         hearts++; 
         document.getElementById("heart").textContent="💙".repeat(hearts)+"🤍".repeat(5-hearts);
         input.value=""; current++;
-        if(current<questions.length) document.getElementById("questionText").textContent=questions[current].q; 
-        else { document.getElementById("quizSection").style.display="none"; document.getElementById("contract").style.display="block"; }
+        if(current<questions.length) {
+            document.getElementById("questionText").textContent=questions[current].q; 
+        } else { 
+            document.getElementById("quizSection").style.display="none"; 
+            document.getElementById("valentinSection").style.display="block";
+        }
     } else { document.getElementById("error").textContent="Piénsalo bien 😏"; }
+}
+
+function valentinAceptado() {
+    confetti({particleCount: 150, spread: 100, colors: ['#ff0000', '#ff6b6b', '#ffffff']});
+    document.getElementById("valentinSection").style.display="none";
+    document.getElementById("contract").style.display="block";
 }
 
 function showSignature(){
@@ -185,17 +202,16 @@ function signContract(){
 }
 
 const noBtn=document.getElementById("noBtn"), box=document.getElementById("box");
-noBtn.addEventListener("touchstart",(e)=>{ e.preventDefault(); moverNo(); }); // Soporte para toque
-noBtn.addEventListener("mouseover", moverNo);
-
-function moverNo(){
+const moverNo = () => {
     const x=Math.random()*(box.clientWidth - 80);
     const y=Math.random()*(box.clientHeight - 80);
     noBtn.style.left=x+"px";
     noBtn.style.top=y+"px";
     noScale-=0.1;
     if(noScale>0.3) noBtn.style.transform="scale("+noScale+")";
-}
+};
+noBtn.addEventListener("touchstart",(e)=>{ e.preventDefault(); moverNo(); });
+noBtn.addEventListener("mouseover", moverNo);
 
 function initGame(){
     const canvas = document.getElementById("gameCanvas"), ctx = canvas.getContext("2d");
